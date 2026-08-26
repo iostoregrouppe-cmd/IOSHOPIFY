@@ -1,0 +1,233 @@
+{% comment %}
+  iO STORE — Header estilo Apple
+  Paleta: Azul #004FA3 · Blanco #fff · Negro #1D1D1F
+{% endcomment %}
+ 
+<style>
+  /* Ocultar header original de Shopify (Encabezado) */
+  .shopify-section-group-header-group .header-wrapper,
+  .shopify-section-group-header-group header,
+  .shopify-section-group-header-group .section-header { display: none !important; }
+ 
+  /* ---- Header ---- */
+  .ios-nav {
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+    width: 100%;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  }
+ 
+  .ios-nav__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    gap: 12px;
+  }
+ 
+  /* Logo */
+  .ios-nav__logo {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+ 
+  .ios-nav__logo-text {
+    font-size: 18px;
+    font-weight: 800;
+    color: #1D1D1F;
+    letter-spacing: -0.5px;
+  }
+ 
+  .ios-nav__logo-text span { color: #004FA3; }
+ 
+  /* Links de navegación */
+  .ios-nav__links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex: 1;
+    justify-content: center;
+  }
+ 
+  .ios-nav__links li { margin: 0; }
+ 
+  .ios-nav__link {
+    display: block;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 400;
+    color: #1D1D1F;
+    text-decoration: none;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: color 0.15s ease, background 0.15s ease;
+    letter-spacing: -0.1px;
+  }
+ 
+  .ios-nav__link:hover {
+    color: #004FA3;
+    background: rgba(0,79,163,0.06);
+  }
+ 
+  /* Iconos derecha */
+  .ios-nav__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+ 
+  .ios-nav__action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #1D1D1F;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+ 
+  .ios-nav__action-btn:hover {
+    background: rgba(0,0,0,0.06);
+    color: #004FA3;
+  }
+ 
+  .ios-nav__action-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    fill: none;
+  }
+ 
+  /* Menú hamburguesa (mobile) */
+  .ios-nav__hamburger { display: none; }
+ 
+  .ios-nav__mobile-menu {
+    display: none;
+    background: rgba(255,255,255,0.98);
+    border-top: 1px solid rgba(0,0,0,0.08);
+    padding: 12px 0 20px;
+  }
+ 
+  .ios-nav__mobile-menu.open { display: block; }
+ 
+  .ios-nav__mobile-menu a {
+    display: block;
+    padding: 12px 24px;
+    font-size: 15px;
+    color: #1D1D1F;
+    text-decoration: none;
+    font-weight: 400;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+ 
+  .ios-nav__mobile-menu a:hover { color: #004FA3; }
+ 
+  /* Responsive */
+  @media (max-width: 900px) {
+    .ios-nav__links { display: none; }
+    .ios-nav__hamburger { display: flex; }
+  }
+ 
+  @media (max-width: 480px) {
+    .ios-nav__inner { padding: 0 16px; }
+  }
+</style>
+ 
+<nav class="ios-nav" role="navigation" aria-label="Navegación principal">
+  <div class="ios-nav__inner">
+ 
+   <!-- Logo -->
+<a href="/" class="ios-nav__logo">
+  <img src="{{ 'header_logo.png' | file_url }}" alt="iO STORE" style="height: 32px; width: auto; display: block;">
+</a>
+ 
+    <!-- Links -->
+    <ul class="ios-nav__links">
+      <li><a href="/collections/iphone" class="ios-nav__link">iPhone</a></li>
+      <li><a href="/collections/macbooks" class="ios-nav__link">MacBook</a></li>
+      <li><a href="/collections/ipads" class="ios-nav__link">iPad</a></li>
+      <li><a href="/collections/airpods" class="ios-nav__link">AirPods</a></li>
+      <li><a href="/collections/apple-watch" class="ios-nav__link">Apple Watch</a></li>
+      <li><a href="/pages/soporte" class="ios-nav__link">Soporte</a></li>
+      <li><a href="/pages/entretenimiento" class="ios-nav__link">Entretenimiento</a></li>
+      <li><a href="/pages/donde-comprar" class="ios-nav__link">Dónde comprar</a></li>
+    </ul>
+ 
+    <!-- Acciones: buscar + carrito -->
+    <div class="ios-nav__actions">
+      <!-- Búsqueda -->
+      <a href="/search" class="ios-nav__action-btn" aria-label="Buscar">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/>
+        </svg>
+      </a>
+      <!-- Carrito -->
+      <a href="/cart" class="ios-nav__action-btn" aria-label="Carrito">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+      </a>
+      <!-- Hamburger (mobile) -->
+      <button class="ios-nav__action-btn ios-nav__hamburger" id="ios-nav-toggle" aria-label="Menú">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+ 
+  </div>
+ 
+  <!-- Menú mobile -->
+  <div class="ios-nav__mobile-menu" id="ios-nav-mobile">
+    <a href="/collections/iphone">iPhone</a>
+    <a href="/collections/macbooks">MacBook</a>
+    <a href="/collections/ipads">iPad</a>
+    <a href="/collections/airpods">AirPods</a>
+    <a href="/collections/apple-watch">Apple Watch</a>
+    <a href="/pages/soporte">Soporte</a>
+    <a href="/pages/entretenimiento">Entretenimiento</a>
+    <a href="/pages/donde-comprar">Dónde comprar</a>
+  </div>
+</nav>
+ 
+<script>
+(function() {
+  var btn = document.getElementById('ios-nav-toggle');
+  var menu = document.getElementById('ios-nav-mobile');
+  if (btn && menu) {
+    btn.addEventListener('click', function() {
+      menu.classList.toggle('open');
+    });
+  }
+})();
+</script>
+ 
+{% schema %}
+{
+  "name": "iO Header Nav",
+  "tag": "div",
+  "class": "section-ios-header-nav",
+  "settings": [],
+  "presets": [{ "name": "iO Header Nav" }]
+}
+{% endschema %}

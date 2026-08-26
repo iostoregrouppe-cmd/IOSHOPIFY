@@ -1,0 +1,182 @@
+
+{% comment %}
+  iO STORE — Barra de Confianza (scrolling infinito)
+  Paleta: Azul #004FA3 · Gris #F2F2F7 · Negro #1D1D1F
+{% endcomment %}
+ 
+<style>
+  .ios-trust {
+    background: {{ section.settings.bg_color }};
+    padding: 14px 0;
+    overflow: hidden;
+    position: relative;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+ 
+  /* Fade en los bordes */
+  .ios-trust::before,
+  .ios-trust::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 80px;
+    z-index: 2;
+    pointer-events: none;
+  }
+ 
+  .ios-trust::before {
+    left: 0;
+    background: linear-gradient(to right, {{ section.settings.bg_color }}, transparent);
+  }
+ 
+  .ios-trust::after {
+    right: 0;
+    background: linear-gradient(to left, {{ section.settings.bg_color }}, transparent);
+  }
+ 
+  .ios-trust__track {
+    display: flex;
+    width: max-content;
+    animation: ios-trust-scroll {{ section.settings.speed }}s linear infinite;
+  }
+ 
+  .ios-trust__track:hover {
+    animation-play-state: paused;
+  }
+ 
+  @keyframes ios-trust-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+ 
+  .ios-trust__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 36px;
+    white-space: nowrap;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: {{ section.settings.text_color }};
+    letter-spacing: 0.02em;
+  }
+ 
+  .ios-trust__dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: {{ section.settings.dot_color }};
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+ 
+  .ios-trust__icon {
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+</style>
+ 
+<div class="ios-trust">
+  <div class="ios-trust__track">
+ 
+    {% comment %} Primera copia {% endcomment %}
+    {% for block in section.blocks %}
+      {% if block.type == 'trust_item' %}
+        <span class="ios-trust__item">
+          {% if block.settings.icon != blank %}
+            <span class="ios-trust__icon">{{ block.settings.icon }}</span>
+          {% endif %}
+          {{ block.settings.text }}
+        </span>
+        <span class="ios-trust__dot"></span>
+      {% endif %}
+    {% endfor %}
+ 
+    {% comment %} Segunda copia (para el loop infinito) {% endcomment %}
+    {% for block in section.blocks %}
+      {% if block.type == 'trust_item' %}
+        <span class="ios-trust__item">
+          {% if block.settings.icon != blank %}
+            <span class="ios-trust__icon">{{ block.settings.icon }}</span>
+          {% endif %}
+          {{ block.settings.text }}
+        </span>
+        <span class="ios-trust__dot"></span>
+      {% endif %}
+    {% endfor %}
+ 
+  </div>
+</div>
+ 
+{% schema %}
+{
+  "name": "iO Barra de Confianza",
+  "tag": "section",
+  "class": "section-ios-trust-bar",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Color de fondo",
+      "default": "#004FA3"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Color del texto",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "dot_color",
+      "label": "Color del punto separador",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Velocidad del scroll (segundos)",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "default": 30,
+      "unit": "s"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "trust_item",
+      "name": "Item de confianza",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Ícono (emoji)",
+          "default": "✓"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texto",
+          "default": "Equipos sellados de fábrica"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "iO Barra de Confianza",
+      "blocks": [
+        { "type": "trust_item", "settings": { "icon": "✓", "text": "Equipos sellados de fábrica" } },
+        { "type": "trust_item", "settings": { "icon": "🛡", "text": "Garantía Apple 1 año" } },
+        { "type": "trust_item", "settings": { "icon": "🇵🇪", "text": "Envíos a todo el Perú" } },
+        { "type": "trust_item", "settings": { "icon": "💬", "text": "Asesoría personalizada" } },
+        { "type": "trust_item", "settings": { "icon": "🔒", "text": "Pago 100% seguro" } },
+        { "type": "trust_item", "settings": { "icon": "📦", "text": "Empaque protegido con tracking" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

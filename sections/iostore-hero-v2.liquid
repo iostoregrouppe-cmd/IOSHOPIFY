@@ -1,0 +1,575 @@
+
+{% comment %}
+  iO STORE — Hero Principal v2
+  Paleta: Azul Apple #004FA3 · Gris Apple Store #F2F2F7 · Negro Apple #1D1D1F
+  + Video de fondo (archivo subido o YouTube/Vimeo)
+{% endcomment %}
+ 
+<style>
+  .ios2-hero {
+    background: #000;
+    color: #fff;
+    min-height: 640px;
+    position: relative;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  }
+ 
+  /* ---- Video de fondo ---- */
+  .ios2-hero__video-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+ 
+  .ios2-hero__video-bg video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+ 
+  .ios2-hero__video-bg iframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 177.78vh; /* 16:9 */
+    height: 56.25vw;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translate(-50%, -50%);
+    border: none;
+    pointer-events: none;
+  }
+ 
+  /* Overlay oscuro encima del video */
+  .ios2-hero__video-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, {{ section.settings.video_overlay_opacity | divided_by: 100.0 }});
+    z-index: 1;
+  }
+ 
+  /* Todo el contenido va encima del video */
+  .ios2-hero__inner {
+    position: relative;
+    z-index: 2;
+  }
+ 
+  /* Línea decorativa top en azul Apple */
+  .ios2-hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #004FA3, #34aadc, #004FA3);
+  }
+ 
+  .ios2-hero__inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 60px 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    min-height: 640px;
+    gap: 60px;
+  }
+ 
+  /* ---- Tabs ---- */
+  .ios2-hero__tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+ 
+  .ios2-hero__tab {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 7px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    letter-spacing: 0.01em;
+  }
+ 
+  .ios2-hero__tab.active {
+    background: #004FA3;
+    color: #fff;
+    border-color: #004FA3;
+  }
+ 
+  .ios2-hero__tab:hover:not(.active) {
+    background: rgba(255,255,255,0.14);
+    color: #fff;
+    border-color: rgba(255,255,255,0.2);
+  }
+ 
+  /* ---- Badge precio ---- */
+  .ios2-hero__price-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+ 
+  .ios2-hero__price-from {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.3px;
+  }
+ 
+  .ios2-hero__price-original {
+    font-size: 14px;
+    color: rgba(255,255,255,0.4);
+    text-decoration: line-through;
+  }
+ 
+  .ios2-hero__savings {
+    background: #004FA3;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+ 
+  /* ---- Título ---- */
+  .ios2-hero__title {
+    font-size: clamp(38px, 5vw, 68px);
+    font-weight: 800;
+    line-height: 1.02;
+    margin: 0 0 20px;
+    letter-spacing: -2px;
+    color: #F2F2F7;
+  }
+ 
+  .ios2-hero__title .highlight {
+    color: #004FA3;
+  }
+ 
+  .ios2-hero__subtitle {
+    font-size: 16px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.65;
+    max-width: 460px;
+    margin-bottom: 40px;
+    font-weight: 400;
+  }
+ 
+  /* ---- Botones ---- */
+  .ios2-hero__ctas {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 52px;
+  }
+ 
+  .ios2-hero__btn-primary {
+    background: #004FA3;
+    color: #fff;
+    border: none;
+    padding: 13px 26px;
+    border-radius: 980px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s, transform 0.15s;
+    font-family: inherit;
+    letter-spacing: 0.01em;
+  }
+ 
+  .ios2-hero__btn-primary:hover {
+    background: #005BBF;
+    transform: translateY(-1px);
+    color: #fff;
+    text-decoration: none;
+  }
+ 
+  .ios2-hero__btn-whatsapp {
+    background: transparent;
+    color: rgba(255,255,255,0.85);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    padding: 13px 26px;
+    border-radius: 980px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+ 
+  .ios2-hero__btn-whatsapp:hover {
+    border-color: #25d366;
+    color: #25d366;
+    background: rgba(37,211,102,0.06);
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+ 
+  /* ---- Specs ---- */
+  .ios2-hero__specs {
+    display: flex;
+    gap: 36px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    flex-wrap: wrap;
+  }
+ 
+  .ios2-hero__spec-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    display: block;
+    letter-spacing: -0.2px;
+  }
+ 
+  .ios2-hero__spec-desc {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    display: block;
+    margin-top: 3px;
+    letter-spacing: 0.01em;
+  }
+ 
+  /* ---- Imagen ---- */
+  .ios2-hero__image-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    min-height: 400px;
+  }
+ 
+  /* Brillo azul detrás del producto */
+  .ios2-hero__image-wrap::after {
+    content: '';
+    position: absolute;
+    width: 360px;
+    height: 360px;
+    background: radial-gradient(circle, rgba(0,79,163,0.18) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+  }
+ 
+  .ios2-hero__image {
+    max-height: 500px;
+    max-width: 100%;
+    object-fit: contain;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 40px 100px rgba(0,0,0,0.7));
+    transition: transform 0.4s ease;
+  }
+ 
+  .ios2-hero__image:hover {
+    transform: scale(1.02) translateY(-4px);
+  }
+ 
+  /* ---- Responsive ---- */
+  @media (max-width: 900px) {
+    .ios2-hero__inner {
+      grid-template-columns: 1fr;
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .ios2-hero__image-wrap {
+      order: -1;
+      min-height: 260px;
+    }
+    .ios2-hero__image { max-height: 240px; }
+    .ios2-hero__ctas, .ios2-hero__specs, .ios2-hero__tabs, .ios2-hero__price-row {
+      justify-content: center;
+    }
+    .ios2-hero__subtitle { margin-left: auto; margin-right: auto; }
+  }
+</style>
+ 
+<section class="ios2-hero">
+ 
+  {% comment %} Video de fondo {% endcomment %}
+  {% if section.settings.video_file != blank or section.settings.video_url != blank %}
+    <div class="ios2-hero__video-bg">
+      {% if section.settings.video_file != blank %}
+        {{
+          section.settings.video_file
+          | video_tag:
+            autoplay: true,
+            loop: true,
+            muted: true,
+            playsinline: true,
+            controls: false
+        }}
+      {% elsif section.settings.video_url != blank %}
+        {% assign video_url = section.settings.video_url %}
+        {% if video_url contains 'youtube.com' or video_url contains 'youtu.be' %}
+          {% assign yt_id = video_url | split: 'v=' | last | split: '&' | first %}
+          {% if video_url contains 'youtu.be' %}
+            {% assign yt_id = video_url | split: 'youtu.be/' | last | split: '?' | first %}
+          {% endif %}
+          <iframe
+            src="https://www.youtube.com/embed/{{ yt_id }}?autoplay=1&mute=1&loop=1&playlist={{ yt_id }}&controls=0&showinfo=0&rel=0&modestbranding=1"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+          ></iframe>
+        {% elsif video_url contains 'vimeo.com' %}
+          {% assign vimeo_id = video_url | split: 'vimeo.com/' | last | split: '?' | first %}
+          <iframe
+            src="https://player.vimeo.com/video/{{ vimeo_id }}?autoplay=1&muted=1&loop=1&background=1"
+            allow="autoplay; fullscreen"
+          ></iframe>
+        {% endif %}
+      {% endif %}
+    </div>
+    <div class="ios2-hero__video-overlay"></div>
+  {% endif %}
+ 
+  <div class="ios2-hero__inner">
+ 
+    <!-- Columna texto -->
+    <div class="ios2-hero__content">
+ 
+      <!-- Tabs -->
+      <div class="ios2-hero__tabs">
+        {% for block in section.blocks %}
+          {% if block.type == 'product_tab' %}
+            <button
+              class="ios2-hero__tab {% if forloop.first %}active{% endif %}"
+              onclick="ios2Switch(this, {{ forloop.index0 }})"
+            >
+              {{ block.settings.tab_label }}
+            </button>
+          {% endif %}
+        {% endfor %}
+      </div>
+ 
+      <!-- Slides -->
+      {% for block in section.blocks %}
+        {% if block.type == 'product_tab' %}
+          <div class="ios2-hero__slide" id="ios2-slide-{{ forloop.index0 }}" style="{% unless forloop.first %}display:none{% endunless %}">
+ 
+            <div class="ios2-hero__price-row">
+              <span class="ios2-hero__price-from">Desde {{ block.settings.price }}</span>
+              {% if block.settings.original_price != blank %}
+                <span class="ios2-hero__price-original">{{ block.settings.original_price }}</span>
+              {% endif %}
+              {% if block.settings.savings_label != blank %}
+                <span class="ios2-hero__savings">{{ block.settings.savings_label }}</span>
+              {% endif %}
+            </div>
+ 
+            <h1 class="ios2-hero__title">
+              {{ block.settings.headline | replace: '[[', '<span class="highlight">' | replace: ']]', '</span>' }}
+            </h1>
+ 
+            <p class="ios2-hero__subtitle">{{ block.settings.description }}</p>
+ 
+            <div class="ios2-hero__ctas">
+              <a href="{{ block.settings.product_url }}" class="ios2-hero__btn-primary">
+                Ver Producto &rarr;
+              </a>
+              <a
+                href="https://wa.me/{{ section.settings.whatsapp_number }}?text={{ block.settings.whatsapp_message | url_encode }}"
+                target="_blank"
+                class="ios2-hero__btn-whatsapp"
+              >
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+                Consultar por WhatsApp
+              </a>
+            </div>
+ 
+            <div class="ios2-hero__specs">
+              {% if block.settings.spec1_label != blank %}
+                <div>
+                  <span class="ios2-hero__spec-label">{{ block.settings.spec1_label }}</span>
+                  <span class="ios2-hero__spec-desc">{{ block.settings.spec1_desc }}</span>
+                </div>
+              {% endif %}
+              {% if block.settings.spec2_label != blank %}
+                <div>
+                  <span class="ios2-hero__spec-label">{{ block.settings.spec2_label }}</span>
+                  <span class="ios2-hero__spec-desc">{{ block.settings.spec2_desc }}</span>
+                </div>
+              {% endif %}
+              {% if block.settings.spec3_label != blank %}
+                <div>
+                  <span class="ios2-hero__spec-label">{{ block.settings.spec3_label }}</span>
+                  <span class="ios2-hero__spec-desc">{{ block.settings.spec3_desc }}</span>
+                </div>
+              {% endif %}
+            </div>
+ 
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+ 
+    <!-- Imagen -->
+    <div class="ios2-hero__image-wrap">
+      {% for block in section.blocks %}
+        {% if block.type == 'product_tab' %}
+          {% if block.settings.product_image != blank %}
+            <img
+              src="{{ block.settings.product_image | image_url: width: 900 }}"
+              alt="{{ block.settings.tab_label }}"
+              class="ios2-hero__image ios2-hero__img-slide"
+              id="ios2-img-{{ forloop.index0 }}"
+              style="{% unless forloop.first %}display:none{% endunless %}"
+              loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+              width="900"
+            >
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </div>
+ 
+  </div>
+</section>
+ 
+<script>
+  function ios2Switch(btn, index) {
+    document.querySelectorAll('.ios2-hero__tab').forEach(function(t) { t.classList.remove('active'); });
+    btn.classList.add('active');
+    document.querySelectorAll('.ios2-hero__slide').forEach(function(s) { s.style.display = 'none'; });
+    var slide = document.getElementById('ios2-slide-' + index);
+    if (slide) slide.style.display = 'block';
+    document.querySelectorAll('.ios2-hero__img-slide').forEach(function(img) { img.style.display = 'none'; });
+    var img = document.getElementById('ios2-img-' + index);
+    if (img) img.style.display = 'block';
+  }
+</script>
+ 
+{% schema %}
+{
+  "name": "iO Hero v2 (Apple Store)",
+  "tag": "section",
+  "class": "section-ios2-hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "whatsapp_number",
+      "label": "Número WhatsApp (sin +)",
+      "default": "51946411408"
+    },
+    {
+      "type": "header",
+      "content": "Video de fondo (opcional)"
+    },
+    {
+      "type": "video",
+      "id": "video_file",
+      "label": "Video subido (archivo MP4)",
+      "info": "Sube un video desde tu biblioteca de Shopify. Recomendado: corto, sin audio, HD."
+    },
+    {
+      "type": "text",
+      "id": "video_url",
+      "label": "O pega un link de YouTube o Vimeo",
+      "info": "Si subes un archivo de video, ese tendrá prioridad sobre el link."
+    },
+    {
+      "type": "range",
+      "id": "video_overlay_opacity",
+      "label": "Oscuridad del overlay (0 = sin overlay, 80 = muy oscuro)",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "default": 55,
+      "unit": "%"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product_tab",
+      "name": "Producto Tab",
+      "settings": [
+        { "type": "text", "id": "tab_label", "label": "Nombre del tab", "default": "iPhone 17 Pro Max" },
+        { "type": "image_picker", "id": "product_image", "label": "Imagen del producto" },
+        { "type": "text", "id": "price", "label": "Precio desde", "default": "S/4,799" },
+        { "type": "text", "id": "original_price", "label": "Precio original tachado (opcional)" },
+        { "type": "text", "id": "savings_label", "label": "Badge de ahorro", "default": "AHORRAS S/1,700" },
+        { "type": "textarea", "id": "headline", "label": "Titular (usa [[texto]] para azul)", "default": "iO STORE,\n[[La mejor manera de comprar los productos que te encantan.]]" },
+        { "type": "textarea", "id": "description", "label": "Descripción", "default": "Construido en titanio aeroespacial de grado 5. Lente teleobjetivo de 48 MP, un motor neuronal ultra-potente y un diseño extraordinariamente delgado y duradero." },
+        { "type": "url", "id": "product_url", "label": "URL del producto" },
+        { "type": "text", "id": "whatsapp_message", "label": "Mensaje WhatsApp", "default": "Hola, quiero información sobre el iPhone 17 Pro Max" },
+        { "type": "text", "id": "spec1_label", "label": "Spec 1 — Título", "default": "Chip A19 Pro" },
+        { "type": "text", "id": "spec1_desc", "label": "Spec 1 — Desc", "default": "Gráficos de Consola" },
+        { "type": "text", "id": "spec2_label", "label": "Spec 2 — Título", "default": "Cámara 48 MP" },
+        { "type": "text", "id": "spec2_desc", "label": "Spec 2 — Desc", "default": "Teleobjetivo Óptico 5x" },
+        { "type": "text", "id": "spec3_label", "label": "Spec 3 — Título", "default": "Titanio Grado 5" },
+        { "type": "text", "id": "spec3_desc", "label": "Spec 3 — Desc", "default": "Ligero y Ultra-Resistente" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "iO Hero v2 (Apple Store)",
+      "blocks": [
+        {
+          "type": "product_tab",
+          "settings": {
+            "tab_label": "iPhone 17 Pro Max",
+            "price": "S/4,799",
+            "original_price": "S/6,499",
+            "savings_label": "AHORRAS S/1,700",
+            "headline": "iO STORE,\n[[ La mejor manera de comprar los productos que te encantan.]]",
+            "description": "Construido en titanio aeroespacial de grado 5. Lente teleobjetivo de 48 MP, un motor neuronal ultra-potente y un diseño extraordinariamente delgado y duradero.",
+            "whatsapp_message": "Hola, quiero información sobre el iPhone 17 Pro Max",
+            "spec1_label": "Chip A19 Pro", "spec1_desc": "Gráficos de Consola",
+            "spec2_label": "Cámara 48 MP", "spec2_desc": "Teleobjetivo Óptico 5x",
+            "spec3_label": "Titanio Grado 5", "spec3_desc": "Ligero y Ultra-Resistente"
+          }
+        },
+        {
+          "type": "product_tab",
+          "settings": {
+            "tab_label": "MacBook Pro",
+            "price": "S/7,499",
+            "savings_label": "MEJOR PRECIO",
+            "headline": "MacBook Pro.\nPotencia [[sin límites.]]",
+            "description": "Chip M4 Pro con CPU de 14 núcleos. La máquina definitiva para profesionales creativos y desarrolladores.",
+            "whatsapp_message": "Hola, quiero información sobre el MacBook Pro",
+            "spec1_label": "Chip M4 Pro", "spec1_desc": "CPU 14 núcleos",
+            "spec2_label": "Hasta 64 GB", "spec2_desc": "Memoria unificada",
+            "spec3_label": "Hasta 24h", "spec3_desc": "Todo el día sin cargar"
+          }
+        },
+        {
+          "type": "product_tab",
+          "settings": {
+            "tab_label": "iPad Pro",
+            "price": "S/5,299",
+            "savings_label": "OFERTA",
+            "headline": "iPad Pro.\nLa tablet más [[poderosa.]]",
+            "description": "Pantalla Ultra Retina XDR tandem OLED. El chip M4 en el dispositivo más delgado de Apple.",
+            "whatsapp_message": "Hola, quiero información sobre el iPad Pro",
+            "spec1_label": "Chip M4", "spec1_desc": "Rendimiento extremo",
+            "spec2_label": "Pantalla OLED", "spec2_desc": "Ultra Retina XDR",
+            "spec3_label": "5.1 mm", "spec3_desc": "El más delgado de Apple"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

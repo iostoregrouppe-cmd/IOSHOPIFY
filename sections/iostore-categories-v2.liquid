@@ -1,0 +1,410 @@
+{% comment %}
+  iO STORE — Categorías Grid v2 con Carrusel Automático
+  Paleta Apple Store: Azul #0071E3 · Gris #F2F2F7 · Negro #1D1D1F
+  Hasta 4 imágenes por tarjeta con rotación automática
+{% endcomment %}
+ 
+<style>
+  .ios2-cats {
+    background: #F2F2F7;
+    padding: 90px 40px;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  }
+ 
+  .ios2-cats__header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 56px;
+  }
+ 
+  .ios2-cats__eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    color: #0071E3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+ 
+  .ios2-cats__title {
+    font-size: clamp(28px, 4vw, 46px);
+    font-weight: 800;
+    color: #1D1D1F;
+    margin: 0 0 12px;
+    letter-spacing: -1px;
+    line-height: 1.05;
+  }
+ 
+  .ios2-cats__subtitle {
+    font-size: 17px;
+    color: #6e6e73;
+    line-height: 1.6;
+    margin: 0;
+    font-weight: 400;
+  }
+ 
+  .ios2-cats__grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+ 
+  /* ---- Card ---- */
+  .ios2-cats__card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 28px 28px 24px;
+    display: flex;
+    flex-direction: column;
+    min-height: 270px;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+ 
+  .ios2-cats__card:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.10);
+    text-decoration: none;
+    color: inherit;
+  }
+ 
+  .ios2-cats__card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: #0071E3;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+    border-radius: 18px 18px 0 0;
+  }
+ 
+  .ios2-cats__card:hover::before {
+    transform: scaleX(1);
+  }
+ 
+  /* ---- Flecha ---- */
+  .ios2-cats__arrow {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 32px;
+    height: 32px;
+    background: #F2F2F7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.25s;
+    z-index: 2;
+  }
+ 
+  .ios2-cats__card:hover .ios2-cats__arrow {
+    background: #0071E3;
+    transform: translate(2px, -2px);
+  }
+ 
+  .ios2-cats__arrow svg {
+    width: 13px;
+    height: 13px;
+    color: #1D1D1F;
+    transition: color 0.2s;
+  }
+ 
+  .ios2-cats__card:hover .ios2-cats__arrow svg {
+    color: #fff;
+  }
+ 
+  /* ---- Carrusel de imágenes ---- */
+  .ios2-cats__carousel {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 6px 0 18px;
+    min-height: 170px;
+  }
+ 
+  .ios2-cats__carousel-img {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+  }
+ 
+  .ios2-cats__carousel-img.active {
+    opacity: 1;
+  }
+ 
+  .ios2-cats__carousel-img img {
+    width: 90%;
+    height: 160px;
+    object-fit: contain;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+ 
+  .ios2-cats__card:hover .ios2-cats__carousel-img.active img {
+    transform: scale(1.06) translateY(-4px);
+  }
+ 
+  /* Dots indicadores del carrusel */
+  .ios2-cats__dots {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 8px;
+    margin-bottom: 14px;
+    min-height: 6px;
+  }
+ 
+  .ios2-cats__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #d1d1d6;
+    transition: background 0.3s, transform 0.3s;
+  }
+ 
+  .ios2-cats__dot.active {
+    background: #0071E3;
+    transform: scale(1.3);
+  }
+ 
+  /* ---- Texto ---- */
+  .ios2-cats__tagline {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #0071E3;
+    margin: 0 0 5px;
+  }
+ 
+  .ios2-cats__name {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1D1D1F;
+    margin: 0 0 4px;
+    letter-spacing: -0.4px;
+  }
+ 
+  .ios2-cats__desc {
+    font-size: 13px;
+    color: #6e6e73;
+    margin: 0;
+    line-height: 1.4;
+    font-weight: 400;
+  }
+ 
+  /* ---- Responsive ---- */
+  @media (max-width: 900px) {
+    .ios2-cats__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+ 
+  @media (max-width: 580px) {
+    .ios2-cats { padding: 60px 16px; }
+    .ios2-cats__grid { grid-template-columns: 1fr; gap: 12px; }
+    .ios2-cats__card { min-height: auto; flex-direction: row; align-items: center; gap: 16px; padding: 20px; }
+    .ios2-cats__carousel { flex: 0 0 80px; margin: 0; min-height: 80px; }
+    .ios2-cats__carousel-img img { max-height: 72px; }
+    .ios2-cats__dots { display: none; }
+    .ios2-cats__arrow { top: 16px; right: 16px; }
+  }
+</style>
+ 
+<section class="ios2-cats">
+ 
+  {% if section.settings.title != blank or section.settings.subtitle != blank %}
+    <div class="ios2-cats__header">
+      {% if section.settings.eyebrow != blank %}
+        <p class="ios2-cats__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+      {% if section.settings.title != blank %}
+        <h2 class="ios2-cats__title">{{ section.settings.title }}</h2>
+      {% endif %}
+      {% if section.settings.subtitle != blank %}
+        <p class="ios2-cats__subtitle">{{ section.settings.subtitle }}</p>
+      {% endif %}
+    </div>
+  {% endif %}
+ 
+  <div class="ios2-cats__grid">
+    {% for block in section.blocks %}
+      {% if block.type == 'category_card' %}
+        {% assign card_id = 'ios2cat-' | append: forloop.index %}
+ 
+        {%- comment -%} Contar cuántas imágenes tiene esta tarjeta {%- endcomment -%}
+        {% assign img_count = 0 %}
+        {% if block.settings.card_image != blank %}{% assign img_count = img_count | plus: 1 %}{% endif %}
+        {% if block.settings.card_image2 != blank %}{% assign img_count = img_count | plus: 1 %}{% endif %}
+        {% if block.settings.card_image3 != blank %}{% assign img_count = img_count | plus: 1 %}{% endif %}
+        {% if block.settings.card_image4 != blank %}{% assign img_count = img_count | plus: 1 %}{% endif %}
+ 
+        <a href="{{ block.settings.card_url }}" class="ios2-cats__card" data-card-id="{{ card_id }}">
+ 
+          <div class="ios2-cats__arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 17L17 7M17 7H7M17 7v10"/>
+            </svg>
+          </div>
+ 
+          <!-- Carrusel de imágenes -->
+          <div class="ios2-cats__carousel" id="{{ card_id }}-carousel">
+            {% if block.settings.card_image != blank %}
+              <div class="ios2-cats__carousel-img active">
+                <img src="{{ block.settings.card_image | image_url: width: 400 }}" alt="{{ block.settings.card_name }}" loading="lazy" width="400">
+              </div>
+            {% endif %}
+            {% if block.settings.card_image2 != blank %}
+              <div class="ios2-cats__carousel-img">
+                <img src="{{ block.settings.card_image2 | image_url: width: 400 }}" alt="{{ block.settings.card_name }}" loading="lazy" width="400">
+              </div>
+            {% endif %}
+            {% if block.settings.card_image3 != blank %}
+              <div class="ios2-cats__carousel-img">
+                <img src="{{ block.settings.card_image3 | image_url: width: 400 }}" alt="{{ block.settings.card_name }}" loading="lazy" width="400">
+              </div>
+            {% endif %}
+            {% if block.settings.card_image4 != blank %}
+              <div class="ios2-cats__carousel-img">
+                <img src="{{ block.settings.card_image4 | image_url: width: 400 }}" alt="{{ block.settings.card_name }}" loading="lazy" width="400">
+              </div>
+            {% endif %}
+          </div>
+ 
+          <!-- Dots indicadores (solo si hay más de 1 imagen) -->
+          {% if img_count > 1 %}
+            <div class="ios2-cats__dots" id="{{ card_id }}-dots">
+              {% for i in (1..img_count) %}
+                <div class="ios2-cats__dot {% if forloop.first %}active{% endif %}"></div>
+              {% endfor %}
+            </div>
+          {% endif %}
+ 
+          <!-- Texto -->
+          <div>
+            {% if block.settings.card_tagline != blank %}
+              <p class="ios2-cats__tagline">{{ block.settings.card_tagline }}</p>
+            {% endif %}
+            <h3 class="ios2-cats__name">{{ block.settings.card_name }}</h3>
+            {% if block.settings.card_desc != blank %}
+              <p class="ios2-cats__desc">{{ block.settings.card_desc }}</p>
+            {% endif %}
+          </div>
+ 
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+ 
+</section>
+ 
+<script>
+(function() {
+  function initCarousels() {
+    var cards = document.querySelectorAll('.ios2-cats__card[data-card-id]');
+    cards.forEach(function(card) {
+      var id = card.getAttribute('data-card-id');
+      var carousel = document.getElementById(id + '-carousel');
+      var dotsContainer = document.getElementById(id + '-dots');
+      if (!carousel) return;
+ 
+      var images = carousel.querySelectorAll('.ios2-cats__carousel-img');
+      if (images.length <= 1) return;
+ 
+      var dots = dotsContainer ? dotsContainer.querySelectorAll('.ios2-cats__dot') : [];
+      var current = 0;
+      var interval = {{ section.settings.carousel_speed | default: 3000 }};
+ 
+      function showSlide(index) {
+        images[current].classList.remove('active');
+        if (dots[current]) dots[current].classList.remove('active');
+        current = (index + images.length) % images.length;
+        images[current].classList.add('active');
+        if (dots[current]) dots[current].classList.add('active');
+      }
+ 
+      var timer = setInterval(function() {
+        showSlide(current + 1);
+      }, interval);
+ 
+      // Pausar al hover
+      card.addEventListener('mouseenter', function() { clearInterval(timer); });
+      card.addEventListener('mouseleave', function() {
+        timer = setInterval(function() { showSlide(current + 1); }, interval);
+      });
+    });
+  }
+ 
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCarousels);
+  } else {
+    initCarousels();
+  }
+})();
+</script>
+ 
+{% schema %}
+{
+  "name": "iO Categorias Grid v2",
+  "tag": "section",
+  "class": "section-ios2-categories",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Texto pequeño sobre el título", "default": "iO STORE" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Explora por Categoría" },
+    { "type": "text", "id": "subtitle", "label": "Subtítulo", "default": "Equipos Apple originales con garantía oficial en Perú." },
+    {
+      "type": "range",
+      "id": "carousel_speed",
+      "label": "Velocidad del carrusel (ms)",
+      "min": 1500,
+      "max": 6000,
+      "step": 500,
+      "default": 3000,
+      "unit": "ms"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category_card",
+      "name": "Tarjeta de Categoria",
+      "settings": [
+        { "type": "image_picker", "id": "card_image", "label": "Imagen 1" },
+        { "type": "image_picker", "id": "card_image2", "label": "Imagen 2 (opcional)" },
+        { "type": "image_picker", "id": "card_image3", "label": "Imagen 3 (opcional)" },
+        { "type": "image_picker", "id": "card_image4", "label": "Imagen 4 (opcional)" },
+        { "type": "text", "id": "card_tagline", "label": "Tagline", "default": "PODER EN TUS MANOS" },
+        { "type": "text", "id": "card_name", "label": "Nombre", "default": "iPhone" },
+        { "type": "text", "id": "card_desc", "label": "Descripción", "default": "Modelos nuevos y de última generación" },
+        { "type": "url", "id": "card_url", "label": "URL de la colección" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "iO Categorias Grid v2",
+      "blocks": [
+        { "type": "category_card", "settings": { "card_tagline": "PODER EN TUS MANOS", "card_name": "iPhone", "card_desc": "Modelos nuevos y de última generación" } },
+        { "type": "category_card", "settings": { "card_tagline": "RENDIMIENTO PROFESIONAL", "card_name": "MacBook", "card_desc": "Procesadores M4 y alto rendimiento" } },
+        { "type": "category_card", "settings": { "card_tagline": "CREATIVIDAD ILIMITADA", "card_name": "iPad", "card_desc": "Pro, Air y Mini listos para diseñar" } },
+        { "type": "category_card", "settings": { "card_tagline": "SONIDO DE ESTUDIO", "card_name": "AirPods", "card_desc": "Cancelación activa y audio inmersivo" } },
+        { "type": "category_card", "settings": { "card_tagline": "TU SALUD AL DIA", "card_name": "Apple Watch", "card_desc": "Seguimiento inteligente y estilo" } },
+        { "type": "category_card", "settings": { "card_tagline": "ORIGINALES GARANTIZADOS", "card_name": "Accesorios", "card_desc": "Cargadores, fundas y MagSafe" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+ 

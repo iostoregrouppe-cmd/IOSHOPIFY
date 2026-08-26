@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+._*
+
+# Shopify CLI / local
+.shopify/
+node_modules/
+*.zip

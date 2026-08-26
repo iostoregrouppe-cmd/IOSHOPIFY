@@ -1,0 +1,160 @@
+{% comment %}
+  iO STORE — Sección Hero Principal
+{% endcomment %}
+
+<style>
+  .ios-hero {
+    background-color: {{ section.settings.bg_color }};
+    color: #fff;
+    min-height: 620px;
+    position: relative;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  }
+  .ios-hero__inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    min-height: 620px;
+    gap: 40px;
+  }
+  .ios-hero__tabs { display: flex; gap: 10px; margin-bottom: 32px; flex-wrap: wrap; }
+  .ios-hero__tab { background: rgba(255,255,255,0.12); color: #fff; border: none; border-radius: 20px; padding: 8px 20px; font-size: 14px; cursor: pointer; transition: background 0.2s; font-family: inherit; }
+  .ios-hero__tab.active, .ios-hero__tab:hover { background: rgba(255,255,255,0.28); }
+  .ios-hero__price-badge { display: inline-flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 10px 18px; margin-bottom: 24px; }
+  .ios-hero__price-from { font-size: 22px; font-weight: 700; color: #fff; }
+  .ios-hero__price-original { font-size: 14px; color: rgba(255,255,255,0.5); text-decoration: line-through; }
+  .ios-hero__savings { background: #22c55e; color: #fff; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+  .ios-hero__title { font-size: clamp(36px, 5vw, 64px); font-weight: 800; line-height: 1.05; margin: 0 0 16px; letter-spacing: -1px; }
+  .ios-hero__title span { color: {{ section.settings.accent_color }}; }
+  .ios-hero__subtitle { font-size: 16px; color: rgba(255,255,255,0.7); line-height: 1.6; max-width: 480px; margin-bottom: 36px; }
+  .ios-hero__ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 48px; }
+  .ios-hero__btn-primary { background: #fff; color: #000; border: none; padding: 14px 28px; border-radius: 50px; font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: opacity 0.2s, transform 0.15s; font-family: inherit; }
+  .ios-hero__btn-primary:hover { opacity: 0.88; transform: translateY(-1px); color: #000; }
+  .ios-hero__btn-whatsapp { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.35); padding: 14px 28px; border-radius: 50px; font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: border-color 0.2s, background 0.2s, transform 0.15s; font-family: inherit; }
+  .ios-hero__btn-whatsapp:hover { border-color: #25d366; background: rgba(37,211,102,0.12); color: #fff; transform: translateY(-1px); }
+  .ios-hero__specs { display: flex; gap: 40px; border-top: 1px solid rgba(255,255,255,0.12); padding-top: 24px; }
+  .ios-hero__spec-label { font-size: 15px; font-weight: 700; color: #fff; display: block; }
+  .ios-hero__spec-desc { font-size: 12px; color: rgba(255,255,255,0.5); display: block; margin-top: 2px; }
+  .ios-hero__image-wrap { display: flex; justify-content: center; align-items: center; position: relative; }
+  .ios-hero__image-wrap::before { content: ''; position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, {{ section.settings.accent_color }}22 0%, transparent 70%); border-radius: 50%; z-index: 0; }
+  .ios-hero__image { max-height: 520px; max-width: 100%; object-fit: contain; position: relative; z-index: 1; filter: drop-shadow(0 40px 80px rgba(0,0,0,0.5)); }
+  @media (max-width: 768px) {
+    .ios-hero__inner { grid-template-columns: 1fr; padding: 40px 20px; text-align: center; }
+    .ios-hero__image-wrap { order: -1; max-height: 280px; }
+    .ios-hero__image { max-height: 260px; }
+    .ios-hero__ctas, .ios-hero__specs, .ios-hero__tabs, .ios-hero__price-badge { justify-content: center; flex-wrap: wrap; }
+  }
+</style>
+
+<section class="ios-hero">
+  <div class="ios-hero__inner">
+    <div class="ios-hero__content">
+      <div class="ios-hero__tabs">
+        {% for block in section.blocks %}
+          {% if block.type == 'product_tab' %}
+            <button class="ios-hero__tab {% if forloop.first %}active{% endif %}" onclick="iosHeroSwitch(this, {{ forloop.index0 }})">
+              {{ block.settings.tab_label }}
+            </button>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% for block in section.blocks %}
+        {% if block.type == 'product_tab' %}
+          <div class="ios-hero__slide" id="ios-slide-{{ forloop.index0 }}" style="{% unless forloop.first %}display:none{% endunless %}">
+            <div class="ios-hero__price-badge">
+              <span class="ios-hero__price-from">Desde {{ block.settings.price }}</span>
+              {% if block.settings.original_price != blank %}<span class="ios-hero__price-original">iShop: {{ block.settings.original_price }}</span>{% endif %}
+              {% if block.settings.savings_label != blank %}<span class="ios-hero__savings">{{ block.settings.savings_label }}</span>{% endif %}
+            </div>
+            <h1 class="ios-hero__title">{{ block.settings.headline | replace: '[[', '<span>' | replace: ']]', '</span>' }}</h1>
+            <p class="ios-hero__subtitle">{{ block.settings.description }}</p>
+            <div class="ios-hero__ctas">
+              <a href="{{ block.settings.product_url }}" class="ios-hero__btn-primary">Ver Producto &rarr;</a>
+              <a href="https://wa.me/{{ section.settings.whatsapp_number }}?text={{ block.settings.whatsapp_message | url_encode }}" target="_blank" class="ios-hero__btn-whatsapp">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Consultar WhatsApp
+              </a>
+            </div>
+            <div class="ios-hero__specs">
+              {% if block.settings.spec1_label != blank %}<div><span class="ios-hero__spec-label">{{ block.settings.spec1_label }}</span><span class="ios-hero__spec-desc">{{ block.settings.spec1_desc }}</span></div>{% endif %}
+              {% if block.settings.spec2_label != blank %}<div><span class="ios-hero__spec-label">{{ block.settings.spec2_label }}</span><span class="ios-hero__spec-desc">{{ block.settings.spec2_desc }}</span></div>{% endif %}
+              {% if block.settings.spec3_label != blank %}<div><span class="ios-hero__spec-label">{{ block.settings.spec3_label }}</span><span class="ios-hero__spec-desc">{{ block.settings.spec3_desc }}</span></div>{% endif %}
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <div class="ios-hero__image-wrap">
+      {% for block in section.blocks %}
+        {% if block.type == 'product_tab' %}
+          {% if block.settings.product_image != blank %}
+            <img src="{{ block.settings.product_image | image_url: width: 900 }}" alt="{{ block.settings.tab_label }}" class="ios-hero__image ios-hero__img-slide" id="ios-img-{{ forloop.index0 }}" style="{% unless forloop.first %}display:none{% endunless %}" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" width="900">
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script>
+  function iosHeroSwitch(btn, index) {
+    document.querySelectorAll('.ios-hero__tab').forEach(function(t) { t.classList.remove('active'); });
+    btn.classList.add('active');
+    document.querySelectorAll('.ios-hero__slide').forEach(function(s) { s.style.display = 'none'; });
+    var slide = document.getElementById('ios-slide-' + index);
+    if (slide) slide.style.display = 'block';
+    document.querySelectorAll('.ios-hero__img-slide').forEach(function(img) { img.style.display = 'none'; });
+    var img = document.getElementById('ios-img-' + index);
+    if (img) img.style.display = 'block';
+  }
+</script>
+
+{% schema %}
+{
+  "name": "iO Hero Principal",
+  "tag": "section",
+  "class": "section-ios-hero",
+  "settings": [
+    { "type": "color", "id": "bg_color", "label": "Color de fondo", "default": "#0a0a0a" },
+    { "type": "color", "id": "accent_color", "label": "Color de acento", "default": "#3b82f6" },
+    { "type": "text", "id": "whatsapp_number", "label": "Número WhatsApp (sin +)", "default": "51946411408" }
+  ],
+  "blocks": [
+    {
+      "type": "product_tab",
+      "name": "Producto Tab",
+      "settings": [
+        { "type": "text", "id": "tab_label", "label": "Nombre del tab", "default": "iPhone 17 Pro Max" },
+        { "type": "image_picker", "id": "product_image", "label": "Imagen del producto" },
+        { "type": "text", "id": "price", "label": "Precio desde (ej: S/4,799)", "default": "S/4,799" },
+        { "type": "text", "id": "original_price", "label": "Precio original tachado (opcional)" },
+        { "type": "text", "id": "savings_label", "label": "Badge de ahorro", "default": "¡AHORRAS S/1,700!" },
+        { "type": "textarea", "id": "headline", "label": "Titular (usa [[texto]] para resaltar)", "default": "iPhone 17 Pro Max.\nEl iPhone que [[alguien está esperando.]]" },
+        { "type": "textarea", "id": "description", "label": "Descripción", "default": "Construido en titanio aeroespacial de grado 5. Lente teleobjetivo de 48 MP, un motor neuronal ultra-potente y un diseño extraordinariamente delgado y duradero." },
+        { "type": "url", "id": "product_url", "label": "URL del producto" },
+        { "type": "text", "id": "whatsapp_message", "label": "Mensaje WhatsApp", "default": "Hola, quiero información sobre el iPhone 17 Pro Max" },
+        { "type": "text", "id": "spec1_label", "label": "Spec 1 — Título", "default": "Chip A19 Pro" },
+        { "type": "text", "id": "spec1_desc", "label": "Spec 1 — Descripción", "default": "Gráficos de Consola" },
+        { "type": "text", "id": "spec2_label", "label": "Spec 2 — Título", "default": "Cámara 48 MP" },
+        { "type": "text", "id": "spec2_desc", "label": "Spec 2 — Descripción", "default": "Teleobjetivo Óptico 5x" },
+        { "type": "text", "id": "spec3_label", "label": "Spec 3 — Título", "default": "Titanio Grado 5" },
+        { "type": "text", "id": "spec3_desc", "label": "Spec 3 — Descripción", "default": "Ligero y Ultra-Resistente" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "iO Hero Principal",
+      "blocks": [
+        { "type": "product_tab", "settings": { "tab_label": "iPhone 17 Pro Max", "price": "S/4,799", "savings_label": "¡AHORRAS S/1,700!", "headline": "iPhone 17 Pro Max.\nEl iPhone que [[alguien está esperando.]]", "description": "Construido en titanio aeroespacial de grado 5. Lente teleobjetivo de 48 MP, un motor neuronal ultra-potente y un diseño extraordinariamente delgado y duradero.", "whatsapp_message": "Hola, quiero información sobre el iPhone 17 Pro Max", "spec1_label": "Chip A19 Pro", "spec1_desc": "Gráficos de Consola", "spec2_label": "Cámara 48 MP", "spec2_desc": "Teleobjetivo Óptico 5x", "spec3_label": "Titanio Grado 5", "spec3_desc": "Ligero y Ultra-Resistente" } },
+        { "type": "product_tab", "settings": { "tab_label": "MacBook Pro", "price": "S/7,499", "savings_label": "¡MEJOR PRECIO!", "headline": "MacBook Pro.\nPotencia [[sin límites.]]", "description": "Chip M4 Pro con rendimiento profesional. La máquina ideal para diseñadores, editores y desarrolladores.", "whatsapp_message": "Hola, quiero información sobre el MacBook Pro", "spec1_label": "Chip M4 Pro", "spec1_desc": "CPU 14 núcleos", "spec2_label": "hasta 64 GB RAM", "spec2_desc": "Memoria unificada", "spec3_label": "Hasta 24h batería", "spec3_desc": "Todo el día sin cargar" } },
+        { "type": "product_tab", "settings": { "tab_label": "iPad Pro", "price": "S/5,299", "savings_label": "¡OFERTA!", "headline": "iPad Pro.\nLa tablet más [[poderosa.]]", "description": "Pantalla Ultra Retina XDR con tecnología tandem OLED. El chip M4 en el dispositivo más delgado de Apple.", "whatsapp_message": "Hola, quiero información sobre el iPad Pro", "spec1_label": "Chip M4", "spec1_desc": "Rendimiento extremo", "spec2_label": "Pantalla OLED", "spec2_desc": "Ultra Retina XDR", "spec3_label": "5.1 mm", "spec3_desc": "El más delgado de Apple" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
